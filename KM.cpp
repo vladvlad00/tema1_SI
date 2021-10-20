@@ -4,8 +4,8 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <openssl/aes.h>
+#include <openssl/rand.h>
 #include <cstdlib>
-#include <ctime>
 
 #include "common.h"
 
@@ -14,8 +14,7 @@ constexpr int MAX_CONNECTIONS = 5;
 
 void generate_key(uint8_t key[16])
 {
-    for (int i=0;i<16;i++)
-        key[i] = rand() % 256;
+    RAND_bytes(key, 16);
     printf("Generated key:\n");
     for (int i=0;i<16;i++)
         printf("%02X", key[i]);
@@ -38,7 +37,6 @@ void handle_connection(int sd)
 
 int main()
 {
-    srand(time(0));
     int sock = socket(AF_INET, SOCK_STREAM, 0);
     if (!sock)
     {
